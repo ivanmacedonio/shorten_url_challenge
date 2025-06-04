@@ -9,6 +9,18 @@ from alembic import context
 from app.domain.models.models import Base
 load_dotenv(override=True)
 
+def build_database_connection_string():
+    DATABASE_DRIVER = os.getenv("DATABASE_DRIVER")
+    DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+    DATABASE_HOST = os.getenv("DATABASE_HOST")
+    DATABASE_PORT = os.getenv("DATABASE_PORT")
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
+    
+    if not all([DATABASE_DRIVER, DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USERNAME]):
+        raise ValueError("All database fields are required to build the connection string")
+    
+    return f'{DATABASE_DRIVER}://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,9 +31,9 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
     
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = build_database_connection_string()
 if not DATABASE_URL:
-    raise Exception("DATABASE_URL is required in the environment variables")
+    raise Exception("DATABASE_URL is required. Review build_database_connection_string function")
 
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
