@@ -11,3 +11,6 @@ host = os.getenv("DATABASE_HOST", "localhost")
 port = os.getenv("DATABASE_PORT", "5432")
 database = os.getenv("DATABASE_NAME")
 DATABASE_CONNECT_STRING = f"{driver}://{username}:{password}@{host}:{port}/{database}"
+
+# Token management
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
