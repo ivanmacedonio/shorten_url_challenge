@@ -17,7 +17,7 @@ class DatabaseService(SQLDatabase):
         return cls._instance
 
     def get_session(self):
-        return self.SessionLocal()
+        return self._SessionLocal()
 
     @contextmanager
     def session_scope_context(self):

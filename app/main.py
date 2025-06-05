@@ -5,7 +5,7 @@ from app.adapters.input.api.controllers import url_router, user_router
 app = FastAPI()
 
 # Health check route
-app.get("/health", tags=["Health"])
+@app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "ok"}
 

@@ -1,18 +1,23 @@
 from abc import ABC, abstractmethod
 from app.domain.entities.user import UserRetrieveDTO, UserCreateDTO
 from pydantic import EmailStr
-from typing import Union
+from fastapi.responses import JSONResponse
+from uuid import UUID
 
-class UserPort(ABC):
-
+class UserServicePort(ABC):
+    
     @abstractmethod
-    def get_by_id(self, user_id: Union[str, int]) -> UserRetrieveDTO:
+    def get_all(self) -> JSONResponse:
         pass
 
     @abstractmethod
-    def get_user_already_exists_by_email(self, user_email: EmailStr) -> bool:
+    def get_by_id(self, user_id: UUID) -> JSONResponse:
         pass
 
     @abstractmethod
-    def create(self, payload):
+    def create(self, payload: UserCreateDTO) -> JSONResponse:
+        pass
+    
+    @abstractmethod
+    def delete(self, user_id: UUID) -> JSONResponse: 
         pass

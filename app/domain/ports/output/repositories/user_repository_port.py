@@ -1,12 +1,17 @@
 from abc import ABC, abstractmethod
 from pydantic import EmailStr
-from typing import Union
-from app.domain.entities.user import UserRetrieveDTO, UserCreateDTO
+from uuid import UUID
+from typing import List
+from app.domain.entities.user import UserRetrieveDTO, UserCreateDTO, PartialUserRetrieveDTO
 
 class UserRepositoryPort(ABC):
+    
+    @abstractmethod
+    def get_all(self) -> List[UserRetrieveDTO]:
+        pass
 
     @abstractmethod
-    def get_by_id(self, user_id: Union[str, int]) -> UserRetrieveDTO:
+    def get_by_id(self, user_id: UUID) -> UserRetrieveDTO:
         pass
 
     @abstractmethod
@@ -14,5 +19,9 @@ class UserRepositoryPort(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, payload: UserCreateDTO) -> dict:
+    def create(self, payload: UserCreateDTO) -> PartialUserRetrieveDTO:
+        pass
+    
+    @abstractmethod
+    def delete(self, user_ud: UUID) -> PartialUserRetrieveDTO:
         pass

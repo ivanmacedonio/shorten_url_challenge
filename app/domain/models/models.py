@@ -16,6 +16,15 @@ class User(Base):
     deleted = Column(Boolean, default=False)
 
     urls = relationship("URL", back_populates="creator")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "password": self.password,
+            "created_at": self.created_at,
+            "deleted": self.deleted
+        }
 
 
 class URL(Base):
@@ -29,3 +38,13 @@ class URL(Base):
     deleted = Column(Boolean, default=False)
 
     creator = relationship("User", back_populates="urls")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "raw_url": self.raw_url,
+            "shorten_url": self.shorten_url,
+            "created_by": self.created_by,
+            "created_at": self.created_at,
+            "deleted": self.deleted
+        }
