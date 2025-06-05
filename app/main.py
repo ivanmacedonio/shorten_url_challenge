@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.adapters.input.api.routes import url_router, user_router
+from app.adapters.input.api.controllers import url_router, user_router
 
 # Mount main app
 app = FastAPI()
