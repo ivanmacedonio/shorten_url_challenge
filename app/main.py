@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.adapters.input.api.controllers import url_router, user_router
+from app.adapters.input.api.controllers import url_router, user_router, auth_router
 
 # Mount main app
 app = FastAPI()
@@ -12,3 +12,4 @@ def health_check():
 # Mount routers
 app.include_router(user_router.router, prefix="/users", tags=["Users"])
 app.include_router(url_router.router, prefix="/urls", tags=["Urls"])
+app.include_router(auth_router.router, prefix="/auth", tags=["Authentication"])

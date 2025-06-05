@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from sqlalchemy import exists, select
 from pydantic import EmailStr
 from uuid import UUID
@@ -6,9 +5,10 @@ from typing import List
 from app.domain.ports.output.database_port import SQLDatabase
 from app.domain.ports.output.repositories.user_repository_port import UserRepositoryPort
 from app.domain.utils.singleton_wrapper import singleton_wrapper
-from app.domain.entities.user import UserRetrieveDTO, UserCreateDTO, PartialUserRetrieveDTO 
+from app.domain.entities.user import UserRetrieveDTO, UserAuthenticateDTO, PartialUserRetrieveDTO
 from app.domain.models.models import User
 from app.domain.configs.logging import logger
+from passlib.hash import bcrypt
 
 @singleton_wrapper
 class UserRepositoryAdapter(UserRepositoryPort):
@@ -39,10 +39,10 @@ class UserRepositoryAdapter(UserRepositoryPort):
                 shortened_urls = []
             )
 
-    def create(self, payload: UserCreateDTO) -> PartialUserRetrieveDTO:
+    def create(self, payload: UserAuthenticateDTO) -> PartialUserRetrieveDTO:
         with self.db_service.session_scope_context() as session:
             logger.info(f'Creating user with the next payload: {payload}')
-            db_user = User(email=payload.email, password=payload.password)
+            db_user = User(email=payload.email, password=bcrypt.hash(payload.password))
             session.add(db_user)
             logger.info(f'User {db_user.email} created successfully')
             session.flush()
@@ -50,13 +50,13 @@ class UserRepositoryAdapter(UserRepositoryPort):
             return PartialUserRetrieveDTO(
                 id = db_user.id,
                 email = db_user.email,
+                password = db_user.password
             )
             
     def delete(self, user_id: UUID) -> PartialUserRetrieveDTO: # soft delete
         with self.db_service.session_scope_context() as session:
             db_user: User = session.query(User).filter_by(id=user_id, deleted=False).first()
-            if not db_user:
-                raise HTTPException(status_code=404, detail=f'user with id {user_id} not found or was already deleted')
+            if not db_user: return
             
             db_user.deleted = True
             logger.info(f'user {user_id} soft deleted successfully')
@@ -71,6 +71,16 @@ class UserRepositoryAdapter(UserRepositoryPort):
             result = session.execute(stmt).scalar()
             return result
     
+    def get_by_email(self, user_email: EmailStr) -> PartialUserRetrieveDTO:
+        with self.db_service.session_scope_context() as session:
+            db_user: User = session.query(User).filter_by(email=user_email, deleted=False).first()
+            if not db_user: return
+
+            return PartialUserRetrieveDTO(
+                id=db_user.id,
+                email=db_user.email,
+                password=db_user.password
+            )
 
             
             

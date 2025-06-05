@@ -14,3 +14,4 @@ DATABASE_CONNECT_STRING = f"{driver}://{username}:{password}@{host}:{port}/{data
 
 # Token management
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_EXPIRATION_TIME = os.getenv("JWT_EXPIRATION_TIME")

@@ -6,7 +6,7 @@ from logging.handlers import QueueHandler, QueueListener
 log_queue = queue.Queue()
 
 stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(logging.Formatter("%(asctime)s - %(threadName)s - %(message)s"))
+stream_handler.setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
 
 queue_handler = QueueHandler(log_queue)
 

@@ -23,14 +23,16 @@ class UserRetrieveDTO(BaseModel):
 class PartialUserRetrieveDTO(BaseModel):
     id: UUID
     email: EmailStr
+    password: Optional[str]
     
     def to_dict(self):
         return {
             "id": str(self.id),
-            "email": self.email
+            "email": self.email,
+            "password": self.password
         }
 
-class UserCreateDTO(BaseModel):
+class UserAuthenticateDTO(BaseModel):
     email: EmailStr
     password: str
     
@@ -39,3 +41,4 @@ class UserCreateDTO(BaseModel):
             "email": self.email,
             "password": self.password
         }
+        

@@ -1,23 +1,21 @@
 from fastapi import APIRouter, Depends
-from app.domain.services.user_service import UserService
-from app.adapters.input.api.injectables import get_user_service
-from app.domain.entities.user import UserCreateDTO
+from app.domain.ports.input.user_service_port import UserServicePort
+from app.adapters.input.api.injectables import inject_user_service
+from app.adapters.input.api.middlewares import verify_token_middleware
 from uuid import UUID
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(verify_token_middleware)]
+)
 
 @router.get("/")
-def get_all_users(service: UserService = Depends(get_user_service)):
+def get_all_users(service: UserServicePort = Depends(inject_user_service)):
     return service.get_all()
 
 @router.get("/{user_id}")
-def get_user_by_id(user_id: UUID, service: UserService = Depends(get_user_service)):
+def get_user_by_id(user_id: UUID, service: UserServicePort = Depends(inject_user_service)):
     return service.get_by_id(user_id)
 
-@router.post("/create")
-def create_user(payload: UserCreateDTO, service: UserService = Depends(get_user_service)):
-    return service.create(payload)
-
 @router.delete("/{user_id}")
-def delete_user(user_id: UUID, service: UserService = Depends(get_user_service)):
+def delete_user(user_id: UUID, service: UserServicePort = Depends(inject_user_service)):
     return service.delete(user_id)
