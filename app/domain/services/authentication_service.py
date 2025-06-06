@@ -12,8 +12,12 @@ class AuthenticationService(AuthenticationServicePort):
     def __init__(self, user_repository: UserRepositoryPort, jwt_service: TokenServicePort):
         self.repository = user_repository
         self.jwt_service = jwt_service
+    
+    @classmethod
+    def is_valid_hash(cls, passA: str, passB: str) -> bool:
+        return bcrypt.verify(passA, passB)
         
-    def register(self, payload: UserAuthenticateDTO) -> dict:
+    def register(self, payload: UserAuthenticateDTO) -> JSONResponse:
         user_already_exists = self.repository.get_by_email(payload.email)
         if user_already_exists:
             raise HTTPException(status_code=400, detail=f'user with email {payload.email} already exists')
@@ -24,9 +28,9 @@ class AuthenticationService(AuthenticationServicePort):
                                 "user_id": str(commited_user.id),
                                 "email": commited_user.email})
 
-    def login(self, payload: UserAuthenticateDTO):
+    def login(self, payload: UserAuthenticateDTO) -> JSONResponse:
         db_user: PartialUserRetrieveDTO = self.repository.get_by_email(payload.email)
-        if db_user is None or not bcrypt.verify(payload.password, db_user.password):
+        if db_user is None or not self.is_valid_hash(payload.password, db_user.password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
         token = self.jwt_service.create_access_token(db_user.id)

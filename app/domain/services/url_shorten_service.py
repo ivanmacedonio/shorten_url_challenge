@@ -58,7 +58,7 @@ class URLShortenService(URLServicePort):
         updated_url = self.repository.delete_by_shortened_url(shortened_url=shortened_id)
         if not updated_url:
             raise HTTPException(
-                status_code=400,
+                status_code=404,
                 detail=f'URL with shortened ID {shortened_id} not found or was already deleted'
             )
         

@@ -11,6 +11,10 @@ class AuthenticationServicePort(ABC):
         pass
     
     @abstractmethod
+    def is_valid_hash(cls, passA: str, passB: str) -> bool:
+        pass
+    
+    @abstractmethod
     def register(self, payload: UserAuthenticateDTO) -> JSONResponse:
         pass
     
