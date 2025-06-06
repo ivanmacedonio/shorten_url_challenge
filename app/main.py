@@ -1,12 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from slowapi.errors import RateLimitExceeded
 from app.adapters.input.api.controllers import url_router, user_router, auth_router
+from app.domain.utils.rate_limiter import limiter, custom_rate_limit_handler
 
 # Mount main app
 app = FastAPI()
 
+# Limit max rate
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
+
 # Health check route
 @app.get("/health", tags=["Health"])
-def health_check():
+@limiter.limit("3/minute")
+def health_check(request: Request):
     return {"status": "ok"}
 
 # Mount routers

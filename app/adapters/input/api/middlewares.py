@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Header
+from fastapi import Depends, HTTPException, Header, Request
 from app.adapters.input.api.injectables import inject_jwt_service
 from app.domain.ports.input.token_service_port import TokenServicePort
 
@@ -11,4 +11,3 @@ def verify_token_middleware(authorization: str = Header(default=..., alias="Auth
     
     token = authorization.split(" ")[1]
     jwt_service.verify_access_token(token=token)
-    
