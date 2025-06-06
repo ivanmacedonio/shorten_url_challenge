@@ -23,5 +23,5 @@ class URLRepositoryPort(ABC):
         pass
     
     @abstractmethod
-    def delete(self, shortened_url: str) -> URLPartialRetrieveDTO:
+    def delete_by_shortened_url(self, shortened_url: str) -> URLPartialRetrieveDTO:
         pass

@@ -33,7 +33,6 @@ class URLRepositoryAdapter(URLRepositoryPort):
         with self.db_service.session_scope_context() as session:
             db_url_list: List[URL] = session.query(URL).filter_by(deleted=False)
             return [URLRetrieveDTO(
-                id=item.id, 
                 shortened_url=item.shorten_url,
                 raw_url=item.raw_url,
                 created_at=item.created_at,
@@ -58,7 +57,7 @@ class URLRepositoryAdapter(URLRepositoryPort):
             )
     
     @handle_db_errors
-    def delete(self, shortened_url: str) -> URLPartialRetrieveDTO:
+    def delete_by_shortened_url(self, shortened_url: str) -> URLPartialRetrieveDTO:
         with self.db_service.session_scope_context() as session:
             db_url: URL = session.query(URL).filter_by(shorten_url=shortened_url, deleted=False).first()
             if not db_url: return

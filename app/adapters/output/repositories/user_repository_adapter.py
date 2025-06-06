@@ -32,7 +32,9 @@ class UserRepositoryAdapter(UserRepositoryPort):
     @handle_db_errors    
     def get_by_id(self, user_id: UUID) -> UserRetrieveDTO:
         with self.db_service.session_scope_context() as session:
-            db_user: User = session.query(User).filter_by(id=user_id).first()
+            db_user: User = session.query(User).filter_by(id=user_id, deleted=False).first()
+            if not db_user: return
+            
             return UserRetrieveDTO(
                 id = user_id,
                 email = db_user.email,
@@ -67,7 +69,8 @@ class UserRepositoryAdapter(UserRepositoryPort):
             logger.info(f'user {user_id} soft deleted successfully')
             return PartialUserRetrieveDTO(
                 id = db_user.id,
-                email = db_user.email
+                email = db_user.email,
+                password=db_user.password
             )
     
     @handle_db_errors

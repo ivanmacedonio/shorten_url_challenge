@@ -13,7 +13,7 @@ class URLShortenService(URLServicePort):
         self.repository = repository
     
     def get_url_and_redirect(self, shortened_url: str) -> RedirectResponse:
-        db_url = self.repository.get(shortened_url=shortened_url)
+        db_url = self.repository.get_one(shortened_url=shortened_url)
         if not db_url:
             raise HTTPException(status_code=404, detail={"message": f'URL {shortened_url} not found'})
         
@@ -28,7 +28,7 @@ class URLShortenService(URLServicePort):
     
     def save_url(self, payload: URLCreateDTO, current_user_id: UUID) -> JSONResponse:
         shortened_url = generate_random_short_id()
-        shortened_url_already_exists = self.repository.get(shortened_url=shortened_url)
+        shortened_url_already_exists = self.repository.get_one(shortened_url=shortened_url)
         if shortened_url_already_exists: 
             raise HTTPException(
                 status_code=400,
@@ -55,7 +55,7 @@ class URLShortenService(URLServicePort):
                 status_code=400,
                 detail="shortened_id is required"
             )
-        updated_url = self.repository.delete(shortened_url=shortened_id)
+        updated_url = self.repository.delete_by_shortened_url(shortened_url=shortened_id)
         if not updated_url:
             raise HTTPException(
                 status_code=400,

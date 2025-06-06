@@ -3,7 +3,6 @@ from typing import Optional
 from uuid import UUID
 
 class URLRetrieveDTO(BaseModel):
-    id: Optional[UUID]
     raw_url: AnyHttpUrl
     shortened_url: str
     created_by: UUID
@@ -12,7 +11,6 @@ class URLRetrieveDTO(BaseModel):
     
     def to_dict(self):
         return {
-            "id": str(self.id),
             "raw_url": str(self.raw_url),
             "shorten_url": self.shortened_url,
             "created_by": str(self.created_by),
