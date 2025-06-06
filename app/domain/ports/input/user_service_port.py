@@ -18,5 +18,5 @@ class UserServicePort(ABC):
         pass
 
     @abstractmethod
-    def delete(self, request_user_id: UUID, user_id: UUID) -> JSONResponse: 
+    def delete(self, user_id: UUID) -> JSONResponse: 
         pass

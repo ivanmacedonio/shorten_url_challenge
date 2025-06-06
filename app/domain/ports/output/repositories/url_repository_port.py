@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from typing import List
+from uuid import UUID
 from app.domain.ports.output.database_port import SQLDatabase
 from app.domain.entities.url import URLCreateDTO, URLRetrieveDTO, URLPartialRetrieveDTO
 
@@ -10,15 +11,15 @@ class URLRepositoryPort(ABC):
         pass
     
     @abstractmethod
-    def get(self, shortened_url: str) -> URLRetrieveDTO:
+    def get_one(self, shortened_url: str) -> URLRetrieveDTO:
         pass
     
     @abstractmethod
-    def get_all(self) -> List[URLPartialRetrieveDTO]:
+    def get_all(self) -> List[URLRetrieveDTO]:
         pass
     
     @abstractmethod
-    def create(self, payload: URLCreateDTO) -> URLPartialRetrieveDTO:
+    def create(self, payload: URLCreateDTO, current_user_id: UUID, shortened_url: str) -> URLPartialRetrieveDTO:
         pass
     
     @abstractmethod

@@ -16,7 +16,10 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 def health_check(request: Request):
     return {"status": "ok"}
 
-# Mount routers
+# Private routers
 app.include_router(user_router.router, prefix="/users", tags=["Users"])
 app.include_router(url_router.router, prefix="/urls", tags=["Urls"])
 app.include_router(auth_router.router, prefix="/auth", tags=["Authentication"])
+
+# Pub routers
+app.include_router(url_router.public_router, prefix="/short") # -> manage the redirect

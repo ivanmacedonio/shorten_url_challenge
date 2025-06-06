@@ -22,5 +22,4 @@ def get_user_by_id(request: Request, user_id: UUID, service: UserServicePort = D
 @router.delete("/{user_id}")
 @limiter.limit("30/minute")
 def delete_user(request: Request, user_id: UUID, service: UserServicePort = Depends(inject_user_service)):
-    request_user_id = request.state.request_user_id
-    return service.delete(user_id=user_id, request_user_id=request_user_id)
+    return service.delete(user_id=user_id)
