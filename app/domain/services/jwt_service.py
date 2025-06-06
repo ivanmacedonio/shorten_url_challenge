@@ -27,6 +27,8 @@ class JWTService(TokenServicePort):
             if subject is None:
                 raise JWTError("subject is missing")
             
+            return subject
+            
         except JWTError as jwte:
             raise HTTPException(status_code=401, detail={
                 "message": "invalid access token, please login again",

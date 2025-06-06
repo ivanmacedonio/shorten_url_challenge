@@ -29,12 +29,15 @@ class UserService(UserServicePort):
                 "password": db_user.password,
                 "created_at": str(db_user.created_at),
                 "deleted": db_user.deleted,
-                "shortened_urls": [] #TODO: Add the shortened URLS feature & password hashing
+                "shortened_urls": [] #TODO: Add the shortened URLS
             })
     
-    def delete(self, user_id: UUID):
+    def delete(self, request_user_id: UUID, user_id: UUID):
         if not user_id:
             raise HTTPException(status_code=400, detail="user_id is required")
+        
+        if request_user_id != user_id:
+            raise HTTPException(status_code=401, detail="only can delete your own account")
         
         updated_user = self.repository.delete(user_id)
         if not updated_user:

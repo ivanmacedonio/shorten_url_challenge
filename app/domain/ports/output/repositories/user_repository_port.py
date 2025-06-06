@@ -3,8 +3,13 @@ from pydantic import EmailStr
 from uuid import UUID
 from typing import List
 from app.domain.entities.user import UserRetrieveDTO, UserAuthenticateDTO, PartialUserRetrieveDTO
+from app.domain.ports.output.database_port import SQLDatabase
 
 class UserRepositoryPort(ABC):
+    
+    @abstractmethod
+    def __init__(self, db_service: SQLDatabase):
+        pass
     
     @abstractmethod
     def get_all(self) -> List[UserRetrieveDTO]:
