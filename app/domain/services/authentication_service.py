@@ -5,7 +5,9 @@ from app.domain.entities.user import UserAuthenticateDTO, PartialUserRetrieveDTO
 from app.domain.ports.input.token_service_port import TokenServicePort
 from app.domain.ports.output.repositories.user_repository_port import UserRepositoryPort
 from app.domain.ports.input.authentication_service_port import AuthenticationServicePort
+from app.domain.utils.singleton_wrapper import singleton_wrapper
 
+@singleton_wrapper
 class AuthenticationService(AuthenticationServicePort):
     def __init__(self, user_repository: UserRepositoryPort, jwt_service: TokenServicePort):
         self.repository = user_repository

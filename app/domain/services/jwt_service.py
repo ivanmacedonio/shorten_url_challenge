@@ -1,10 +1,12 @@
+import datetime
 from fastapi import HTTPException
 from uuid import UUID
 from jose import JWTError, jwt, ExpiredSignatureError
 from app.domain.ports.input.token_service_port import TokenServicePort
-import datetime
 from app.domain.configs.dependencies import JWT_SECRET_KEY, JWT_EXPIRATION_TIME
+from app.domain.utils.singleton_wrapper import singleton_wrapper
 
+@singleton_wrapper
 class JWTService(TokenServicePort):
     def __init__(self):
         self.secret_key: str = JWT_SECRET_KEY
