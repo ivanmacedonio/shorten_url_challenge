@@ -26,7 +26,7 @@ class UserRepositoryAdapter(UserRepositoryPort):
                     password = user.password,
                     created_at = user.created_at,
                     deleted = user.deleted,
-                    shortened_urls = []
+                    shortened_urls = [url.to_dict() for url in user.urls]
                 ) for user in users_list]
     
     @handle_db_errors    
@@ -41,7 +41,7 @@ class UserRepositoryAdapter(UserRepositoryPort):
                 password = db_user.password,
                 created_at = db_user.created_at,
                 deleted = db_user.deleted,
-                shortened_urls = []
+                shortened_urls = [url.to_dict() for url in db_user.urls]
             )
     
     @handle_db_errors

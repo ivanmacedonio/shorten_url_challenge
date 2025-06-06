@@ -19,9 +19,10 @@ class User(Base):
     
     def to_dict(self):
         return {
-            "id": self.id,
+            "id": str(self.id),
             "email": self.email,
             "password": self.password,
+            "urls": [str(url.shorten_url) for url in self.urls],
             "created_at": self.created_at,
             "deleted": self.deleted
         }
@@ -41,10 +42,10 @@ class URL(Base):
     
     def to_dict(self):
         return {
-            "id": self.id,
+            "id": str(self.id),
             "raw_url": self.raw_url,
             "shorten_url": self.shorten_url,
-            "created_by": self.created_by,
-            "created_at": self.created_at,
+            "created_by": str(self.created_by),
+            "created_at": str(self.created_at),
             "deleted": self.deleted
         }

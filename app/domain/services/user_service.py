@@ -29,7 +29,7 @@ class UserService(UserServicePort):
                 "password": db_user.password,
                 "created_at": str(db_user.created_at),
                 "deleted": db_user.deleted,
-                "shortened_urls": [] #TODO: Add the shortened URLS
+                "shortened_urls": db_user.shortened_urls
             })
     
     def delete(self, user_id: UUID):

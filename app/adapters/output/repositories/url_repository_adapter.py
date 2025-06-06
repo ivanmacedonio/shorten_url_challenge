@@ -48,7 +48,7 @@ class URLRepositoryAdapter(URLRepositoryPort):
                          shorten_url=shortened_url,
                          created_by=current_user_id)
             session.add(db_url)
-            logger.info(f'URL with ID {db_url.id} created successfully')
+            logger.info(f'URL with shortenID {shortened_url} created successfully')
             session.flush()
             
             return URLPartialRetrieveDTO(
