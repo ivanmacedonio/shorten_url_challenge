@@ -41,6 +41,8 @@ El comando se va a encargar de:
 
 Por defecto, la APP levanta en el puerto 8000, por ende, el hostt es `http://localhost:8000/` 😉
 
+📖 **Todos los endpoints, a excepcion de `/docs - /login - /register - /short` requieren indicar el JWT en el Authorization Header**
+
 📚 Documentacion y Endpoints -> `/docs` 
 
 ## Project Overview
