@@ -37,6 +37,13 @@ El comando se va a encargar de:
 
 `app/domain/services` 👉🏼 UseCases que heredan de su puerto de entrada correspondiente
 
+## Documentación
+
+📖 En la carpeta `/docs` se encuentran los UML que utilice para documentar el flujo y entidades de la APP,
+
+Ademas deje adjuntada una imagen con el GitFlow para dejar constancia del proceso de versionado.
+
+
 ## Referencia a la API
 
 Por defecto, la APP levanta en el puerto 8000, por ende, el hostt es `http://localhost:8000/` 😉
