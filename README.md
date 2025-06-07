@@ -131,4 +131,20 @@ el ID. Luego, se retorna una porción del resultado final, limitada a la longitu
 
     - Ejecutar `python -m unittest discover app/tests/integration -v`
 
+## Aclaraciones
+
+- Debido al contexto del proyecto, se tomaron en cuenta varias decisiones:
+
+    - El archivo .env esta disponible en el repositorio debido a que no es un proyecto hosteado 
+    y resulta más practico para levantarlo en local y poder utilizarlo
+
+    - La carpeta DOCS no deberia existir, preferiria un manager como WikiJS, pero por contexto del entregable,
+    lo dejo adjuntado en el repositorio
+
+    - Los test de integracion se conectan directamente con la base de datos "PRODUCTIVA", por practicidad,
+    de todas formas soy conciente de que es una mala practica, y que se necesita una base de datos en un entorno
+    de desarrollo para estas pruebas. De todas formas, al finalizar los test de ESCRITURA, hay un rollback de por medio
+    que se encarga de eliminar el recurso creado.
+
+
 
