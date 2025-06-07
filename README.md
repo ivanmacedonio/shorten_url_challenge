@@ -25,198 +25,101 @@ El comando se va a encargar de:
 - Ejecutar las migraciones a la base de datos con Alembic
 - Correr los test unitarios
 
-## API Reference
+## Estructura de carpetas
 
-### Authentication
+`app/adapters/input` 👉🏼 Entradas a la APP (Controllers, HTTP)
 
-- Register
+`app/adapters/output` 👉🏼 Salidas de la APP (Repositorios)
 
-    Ruta: `/auth/register`
+`app/domain/ports/input` 👉🏼 Interfaces de los UseCases que mapean con los adapters de entrada
 
-    Metodo: `POST`
+`app/domain/ports/output` 👉🏼 Interfaces de los Repositorios
 
-    Desc: `Crear un usuario en la DB`
+`app/domain/services` 👉🏼 UseCases que heredan de su puerto de entrada correspondiente
 
-    JSON Body  : `{
-    "email": string,
-    "password": string
-    }`
+## Referencia a la API
 
-    Response: `{
-        "message": string,
-        "user_id": string,
-        "email": string
-    }`
+Por defecto, la APP levanta en el puerto 8000, por ende, el hostt es `http://localhost:8000/` 😉
 
-- Login
+📚 Documentacion y Endpoints -> `/docs` 
 
-    Ruta: `/auth/login`
+## Project Overview
 
-    Metodo: `POST`
+## ⚙ Tecnologías utilizadas
+### 🧠 Framework: FastAPI
+Elegí FastAPI por varias razones:
 
-    Desc: `Generar un JWT`
+- Su sintaxis clara y minimalista permite desarrollar rápidamente.
 
-    JSON Body  : `{
-    "email": string,
-    "password": string
-    }`
+- Ideal para proyectos con tiempos limitados gracias a su enrutamiento sencillo.
 
-    Response: `{
-        "message": string,
-        "access_token": string,
-        "token_type": string
-    }`
+- Validación automática de datos mediante Pydantic y sus DTOs.
 
-### Users CRUD
+- Generación automática de errores en las solicitudes erroneas.
 
-- Get all users
+- Soporte de tipado estático.
 
-    Ruta: `/users`
+- Documentación automatica con Swagger en la ruta `/docs`
 
-    Metodo: `GET`
+- Lo que más destaco: inyección de dependencias con el módulo Depends, que permite mapear controladores con sus respectivos puertos de forma totalmente desacoplada.
 
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
+- Familiaridad con la dependencia fastapi-limiter, útil para prevenir ataques DDoS y limitar múltiples peticiones en corto tiempo.
 
-    Desc: `Retornar todos los usuarios registrados`
+### 🗄️ Base de datos: PostgreSQL
+Para la base de datos, opté por PostgreSQL:
 
-    Response: `{
-        "results": [
-            {
-                "id": string,
-                "email": string,
-                "password": string,
-                "created_at": string datetime,
-                "deleted": bool,
-                "shortened_urls": [
-                    {
-                        "id": string,
-                        "raw_url": string,
-                        "shorten_url": string,
-                        "created_by": string,
-                        "created_at": string,
-                        "deleted": bool
-                    }
-                ]
-            }
-        ]
-    }`
+- Necesitaba una base relacional para manejar relaciones claras entre entidades (usuarios y URLs acortadas).
 
-- Get user by ID
+- Preferí un esquema rígido para mantener integridad en los modelos.
 
-    Ruta: `/users/{user_id}`
+- Utilicé Alembic para manejar las migraciones de manera eficiente y ordenada.
 
-    URL Params: `{"user_id": string}`
+### 🔄 ORM: SQLAlchemy
+- Elegí SQLAlchemy por las siguientes razones:
 
-    Metodo: `GET`
+- Familiaridad previa y fácil implementación.
 
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
+- Protección automática contra inyecciones SQL.
 
-    Desc: `Retornar un usuario especifico`
+- Manejo explícito de transacciones.
 
-    Response: `{
-                "id": string,
-                "email": string,
-                "password": string,
-                "created_at": string datetime,
-                "deleted": bool,
-                "shortened_urls": [
-                    {
-                        "id": string,
-                        "raw_url": string,
-                        "shorten_url": string,
-                        "created_by": string,
-                        "created_at": string,
-                        "deleted": bool
-                    }
-                ]
-            }`
-    
-- Delete
+- Soporta múltiples motores de bases de datos, permitiendo desacople del driver de PostgreSQL.
 
-    Ruta: `/users/{user_id}`
+- Soporte robusto para relaciones entre tablas y claves foráneas.
 
-    URL Params: `{"user_id": string}`
+### 🧱 Infraestructura y arquitectura
+🧩 Arquitectura Hexagonal (Ports & Adapters)
+Opté por este enfoque arquitectónico porque:
 
-    Metodo: `DELETE`
+- FastAPI, junto con Depends, facilita un mapeo limpio entre puertos y adaptadores.
 
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
+- Aisla completamente la lógica de negocio (dominio) de los detalles de infraestructura (bases de datos, frameworks, protocolos).
 
-    Desc: `Soft delete a un usuario especifico`
+- Mejora la escalabilidad del sistema: es sencillo agregar funcionalidades sin afectar otras partes.
 
-    Response: `{
-        "message": string,
-        "user_id": string
-    }`    
+- El testeo es más simple porque el dominio no depende de ningún entorno externo.
 
-### URL's CRUD
+- Favorece la legibilidad del código al separar claramente capas: dominio por un lado, infraestructura por otro.
 
-- Get all url's
+- Es ideal para implementar Domain-Driven Design (DDD) de forma clara y facil.
 
-    Ruta: `/urls`
+### 💡 Solución al problema de los ShortID's
 
-    Metodo: `GET`
+Primero, se recibe un UUID4 convertido a un número entero (int). Este número se divide repetidamente por 62, y en
+cada iteración se toma el resto para buscar un carácter correspondiente en una cadena que representa el alfabeto Base62 (62 caracteres posibles).
+Cada carácter obtenido se agrega a un array. Una vez finalizado el proceso, se invierte el array y se une en una cadena para formar
+el ID. Luego, se retorna una porción del resultado final, limitada a la longitud deseada.
 
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
+### 🔄 Extras
 
-    Desc: `Retornar todas las url's registradas`
+- Para ejecutar los test de integración
 
-    Response: `{
-        "results": [
-         {
-            "raw_url": string,
-            "shorten_url": string,
-            "created_by": string,
-            "created_at": string,
-            "deleted": bool
-         }
-        ]
-    }`
+    - Situarse dentro de la carpeta raiz del proyecto
 
-- Redirect by shortened ID
+    - Iniciar un VENV
 
-    Ruta: `/short/{url_short_id}`
+    - Instalar las dependencias con `pip install -r requirements.txt`
 
-    URL Params: `{"url_short_id": string}`
+    - Ejecutar `python -m unittest discover app/tests/integration -v`
 
-    Metodo: `GET`
-
-    Desc: `Redirecciona a la URL original mediante la acortada`
-
-- Create shortened URL
-
-    Ruta: `/urls`
-
-    Metodo: `POST`
-
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
-
-    Desc: `Crea una URL acortada`
-
-    JSON Body: `{
-        "raw_url": string
-    }`
-
-    Response: `{
-         {
-            "message": string,
-            "shortened_url": string,
-            "original_url": string,
-         }
-    }`
-
-- Delete shortened URL
-
-    Ruta: `/urls/{url_short_id}`
-
-    Metodo: `DELETE`
-
-    Headers: `Authorization: Bearer {$ACCESS_TOKEN}`
-
-    Desc: `Soft delete a una URL`
-
-    Response: `{
-         {
-            "message": string,
-         }
-    }`
 
