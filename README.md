@@ -5,6 +5,8 @@
 
 #### Dependencias minimas
 
+🛠️ Este proyecto utiliza Docker y Linux containers. Asegurate de que los scripts `start.sh` estén en formato Unix (LF).
+
 Para poder ejecutar el proyecto, es necesario contar con Docker y Docker compose instalados en el sistema operativo, dado que la aplicacion entera esta montada sobre contenedores para asegurar la integridad del proyecto. 
 
 Instalar Docker 👉🏼 https://docs.docker.com/get-started/get-docker/
